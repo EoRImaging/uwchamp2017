@@ -1,6 +1,8 @@
 import numpy as np
+from numpy import inf
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import scipy
 from scipy import io
 import glob
@@ -9,10 +11,17 @@ def collector(path):
     '''Collects all IDL save data from a given path and stores each file as an element in a list.'''
     
     filenames = glob.glob(path)
+        
+        #path can either be a bunch of files or just one file
+    
+        #data will be a dictionary with 2 keys
+            #key 1 is 'data' - indices for how many files read into collector (if only 1 file read in, index 0)
+            #key 2 is 'filenames' - only used for plotting
     
     data = {'data':[scipy.io.readsav(filenames[i],python_dict=True) \
             for i in range(len(filenames))],'filenames':filenames}
     return data
+
 
 def separator(data):
     '''Compiles data into separate lists of extended and point sources'''
@@ -91,9 +100,22 @@ def pixelate(ra_zoom, dec_zoom, n_bins, ra_total, dec_total, flux_total):
 
 def plotall(data,n_bins,minRA,maxRA,minDEC,maxDEC):
 
+    #plots all points and all point sources within each ext. obj. in a given RA/DEC range
+    
     #Separating data into lists of extended and point sources.
     separated = separator(data)
-        
+    
+    #Correcting RA to go from -180 degrees to 180 degrees instead of 0 degrees to 360 degrees.
+    '''
+    for i in range(len(separated['psources'])):
+        for j in range(len(separated['psources][i])):
+            if separated['psources'][i][j]['ra'] > 180:
+                separated['psources'][i][j]['ra'] -= 360
+    for i in range(len(separated['extsources])):
+        for j in range(len(separated['extsources][i])):                        
+            if separated['extsources'][i][j]['ra'] > 180:
+                separated['extsources'][i][j]['ra'] -= 360
+    '''
     #Creating list of RA coordinates for every point source
     all_point_sources_RA = [separated['psources'][i][j]['RA'] \
         for i in range(len(separated['psources'])) \
@@ -115,7 +137,7 @@ def plotall(data,n_bins,minRA,maxRA,minDEC,maxDEC):
         for j in range(len(separated['extsources'][i])) \
         for k in range(len(separated['extsources'][i][j]['EXTEND']['RA']))]
 
-    #Creating list of RA coordinates for every extended source
+    #Creating list of DEC coordinates for every extended source
     all_EO_sources_DEC = [separated['extsources'][i][j]['EXTEND']['DEC'][k] \
         for i in range(len(separated['extsources'])) \
         for j in range(len(separated['extsources'][i])) \
@@ -174,6 +196,11 @@ def plotall(data,n_bins,minRA,maxRA,minDEC,maxDEC):
 
 def plotEO(data,minI,sumI,n_bins):
     
+    ### - plots all of the point sources within any extended source, cutoffs of intensity minI and sumI - ###
+    
+    #minI - if a component of an extended object has a value of at least minI, the extended object will be plotted
+    #sumI - minimum intensity of parent ext. obj. to show a plot of
+    
     separated = separator(data)
     
     indexed_EO_sources_RA = [[[separated['extsources'][i][j]['EXTEND']['RA'][k] \
@@ -204,9 +231,13 @@ def plotEO(data,minI,sumI,n_bins):
                 (pixels, ra_pixel_centers, dec_pixel_centers) = \
                 pixelate(ra_zoom,dec_zoom,n_bins,ra_total,dec_total,flux_total)
                 
+                #heres where the log happens
+                logpixels = np.log10(pixels)
+                cmap.set_bad('black')
+                
                 plt.figure(figsize=(9,8))
                 plt.imshow(np.transpose(pixels), interpolation = "gaussian", \
-                    origin = "lower", cmap = matplotlib.cm.get_cmap('afmhot'), \
+                    origin = "lower", cmap = matplotlib.cm.get_cmap('autumn'), \
                     extent = [ra_pixel_centers[0], ra_pixel_centers[len(ra_pixel_centers)-1], \
                     dec_pixel_centers[0], dec_pixel_centers[len(dec_pixel_centers)-1]])
 
@@ -226,5 +257,5 @@ def plotEO(data,minI,sumI,n_bins):
                     size=14, ha='center', va='bottom')
                 
                 plt.colorbar(label='Janskies')
-                plt.savefig('pixelatedEO'+'{}'.format(separated['extsources'][i][j]['ID'])+'.png')
+               # plt.savefig('pixelatedEO'+'{}'.format(separated['extsources'][i][j]['ID'])+'.png')
     return plt.show()
