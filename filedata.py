@@ -42,7 +42,7 @@ def extObj(data):
             point.append(data['source_array'][o])
         else:
             ext_obj.append(data['source_array'][o])
-            print 'element', o,'has intensity', data['source_array'][o]['flux'][0][4]
+            print 'element', o,#'has intensity', data['source_array'][o]['flux'][0][4]
 
     return ext_obj 
 
