@@ -43,6 +43,7 @@ def extObj(data):
         else:
             ext_obj.append(data['source_array'][o])
             print 'element', o,#'has intensity', data['source_array'][o]['flux'][0][4]
+            print '\n'
 
     return ext_obj 
 
@@ -53,5 +54,5 @@ def allIntensities(data):
     data_len = range(len(data['source_array']))        #This function will not list the intensities
                                                        #of an extended object's children, only the 
     for o in data_len:                                 #one intensity value of the parent.
-        print data['source_array'][o]['flux']['i']    
+        print 'element ' + str(o) + ' has intensity ' + str(data['source_array'][o]['flux']['i'])  
 
