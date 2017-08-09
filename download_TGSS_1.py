@@ -21,7 +21,7 @@ def arcdist(RA1,RA2,Dec1,Dec2):   #calculates distance between two celestial poi
     return alpha/dr
 
 ##Input coords to search
-ras,decs = loadtxt(args.coord_list,unpack=True)
+ras,decs,objids = loadtxt(args.coord_list,unpack=True)
 im_size = args.im_size
 
 print ras, decs
@@ -44,17 +44,19 @@ for line in pointing_lines:
         
 print ras, decs
 print zip(ras,decs)
+
+print type(objids)
         
-for ra,dec in zip(ras,decs):
+for i,(ra,dec) in enumerate(zip(ras,decs)):
     ##calculate distance of target location to all field centres
     distances = []
     for p_ra,p_dec in pointing_coords:
         dist = arcdist(p_ra,ra,p_dec,dec)
         distances.append(dist)
-    
+    print int(objids[i]),ra,dec
     ##Find the closest field to target
     pointing = pointing_label[distances.index(min(distances))]
     
     ##Run the wget command using the call command - name the output file based on the ra,dec (the -O option in the string below)
-    cmd = 'wget "http://vo.astron.nl/getproduct/tgssadr/fits/TGSSADR_%s_5x5.MOSAIC.FITS?sdec=%.2f&dec=%.10f&ra=%.10f&sra=%.2f" -O downloadTGSS/RA%.2fDEC%.2f_TGSS.fits' %(pointing,im_size,dec,ra,im_size,ra,dec)
+    cmd = 'wget "http://vo.astron.nl/getproduct/tgssadr/fits/TGSSADR_%s_5x5.MOSAIC.FITS?sdec=%.2f&dec=%.10f&ra=%.10f&sra=%.2f" -O downloadTGSS/RA%.2fDEC%.2f_TGSS_EOID%i.fits' %(pointing,im_size,dec,ra,im_size,ra,dec,objids[i])
     call(cmd,shell=True)
