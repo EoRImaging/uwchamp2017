@@ -15,7 +15,7 @@ from scipy import io
 import glob
 from astropy.convolution import convolve, convolve_fft, Gaussian2DKernel
 import aplpy
-import Clusterer_2 as clst2
+import clusterer as clst
 from astropy.wcs import WCS
 from astropy.io import fits
 from astropy import units as u
@@ -32,7 +32,7 @@ def downloadTGSS(data,EOid,NVSS=False):
     takes a .sav file and an object ID, and outputs the name of the FITS file that is downloaded.
     
     Args:
-        data: A .sav file that has been run through clst2.collector
+        data: A .sav file that has been run through clst.collector
         EOid (int): the 5-digit ID describing the extended object (must be from data)
         NVSS (boolean): 
             if True, downloads a FITS file of the object from NVSS
@@ -88,7 +88,7 @@ def contourFits(data,fits_file,EOid,filename,cluster=False,cutoff=0.03):
     different catalog (downloadTGSS can be used to get either TGSS or NVSS FITS files).
     
     Args:
-        data: A .sav file that has been run through clst2.collector
+        data: A .sav file that has been run through clst.collector
         fits_file: The FITS file you would like to plot
         filename: name of the image file that this creates
         cluster: boolean
@@ -103,11 +103,11 @@ def contourFits(data,fits_file,EOid,filename,cluster=False,cutoff=0.03):
     '''
     
     
-    separated = clst2.separator(data)    
-    sought = clst2.seeker(data)
+    separated = clst.separator(data)    
+    sought = clst.seeker(data)
     
     if cluster == True:
-        modeled = clst2.modeler(data,10,0,cutoff=cutoff)
+        modeled = clst.modeler(data,10,0,cutoff=cutoff)
 
         indexed_EO_sources_RA = copy.deepcopy(modeled['EO_sources_RA'])
         indexed_EO_sources_DEC = copy.deepcopy(modeled['EO_sources_DEC'])
@@ -131,7 +131,7 @@ def contourFits(data,fits_file,EOid,filename,cluster=False,cutoff=0.03):
         for j in range(len(separated['extsources'][i])):
             if (separated['extsources'][i][j]['ID'] == EOid):
                 
-                EO_framed = clst2.framer(indexed_EO_sources_RA[i][j],indexed_EO_sources_DEC[i][j])
+                EO_framed = clst.framer(indexed_EO_sources_RA[i][j],indexed_EO_sources_DEC[i][j])
                 EO_RA_zoom = [EO_framed['RA_zoom_min'],EO_framed['RA_zoom_max']]
                 EO_DEC_zoom = [EO_framed['DEC_zoom_min'],EO_framed['DEC_zoom_max']]
                 EO_RA_total = np.array(indexed_EO_sources_RA[i][j])
@@ -139,7 +139,7 @@ def contourFits(data,fits_file,EOid,filename,cluster=False,cutoff=0.03):
                 EO_FLUX_total = np.array(indexed_EO_sources_FLUX[i][j])
                 EO_n_bins = int(max(EO_RA_zoom[1] - EO_RA_zoom[0],
                                     EO_DEC_zoom[1] - EO_DEC_zoom[0]) / binwidth)
-                (EO_pixels, EO_RA_pixel_centers, EO_DEC_pixel_centers) = clst2.pixelate(
+                (EO_pixels, EO_RA_pixel_centers, EO_DEC_pixel_centers) = clst.pixelate(
                     EO_RA_zoom, EO_DEC_zoom, EO_n_bins, EO_RA_total, EO_DEC_total, EO_FLUX_total)
                 EO_pixels[EO_pixels == 0] = pixelreplacement
                 EO_convolved = convolve(EO_pixels, kernel)
@@ -211,7 +211,7 @@ def getFits(data,EOidList,filename,components=True):
     This function takes a clustered .sav file and turns it into a binary FITS file
     
     Args:
-        data: a .sav file that has been run through clst2.collector
+        data: a .sav file that has been run through clst.collector
         EOidList: a list of the EO id's for objects which you would like to be clustered. All other objects
                      will not be clustered.
         filename (str): what you would like the FITS file to be names
@@ -225,8 +225,8 @@ def getFits(data,EOidList,filename,components=True):
         filename (str): what you would like the FITS file to be names
     '''
     
-    sought = clst2.seeker(data)
-    modeled = clst2.modeler(data,percent=0,radius=10,cutoff=.03)
+    sought = clst.seeker(data)
+    modeled = clst.modeler(data,percent=0,radius=10,cutoff=.03)
     
     names = [int(EOidList[i]) for i, val in enumerate(EOidList)]
     name_indices = [j for j, val in enumerate(sought['EO_sources_ID'][0]) if val[0] in names]
