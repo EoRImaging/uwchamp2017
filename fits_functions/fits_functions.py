@@ -375,41 +375,41 @@ def getFits(data,EOidList,filename,components=True):
     EO_V = [val for nest in EO_V for val in nest]
 
    
-    col_ID = fits.Column(name='all_sources_ID', format='J', array=list_ID)
+    col_ID = fits.Column(name='all_sources_ID', format='J', array=EO_ID)
 
-    col_X = fits.Column(name='all_sources_X', format='D', array=list_X)
+    col_X = fits.Column(name='all_sources_X', format='D', array=EO_X)
 
-    col_Y = fits.Column(name='all_sources_Y', format='D', array=list_Y)
+    col_Y = fits.Column(name='all_sources_Y', format='D', array=EO_Y)
 
-    col_RA = fits.Column(name='all_sources_RA', format='D', array=list_RA)
+    col_RA = fits.Column(name='all_sources_RA', format='D', array=EO_RA)
 
-    col_DEC = fits.Column(name='all_sources_RA', format='D', array=list_DEC)
+    col_DEC = fits.Column(name='all_sources_RA', format='D', array=EO_DEC)
 
-    col_STON = fits.Column(name='all_sources_STON', format='D', array=list_STON)
+    col_STON = fits.Column(name='all_sources_STON', format='D', array=EO_STON)
 
-    col_FREQ = fits.Column(name='all_sources_FREQ', format='D', array=list_FREQ)
+    col_FREQ = fits.Column(name='all_sources_FREQ', format='D', array=EO_FREQ)
 
-    col_ALPHA = fits.Column(name='all_sources_ALPHA', format='D', array=list_ALPHA)
+    col_ALPHA = fits.Column(name='all_sources_ALPHA', format='D', array=EO_ALPHA)
 
-    col_GAIN = fits.Column(name='all_sources_GAIN', format='D', array=list_GAIN)
+    col_GAIN = fits.Column(name='all_sources_GAIN', format='D', array=EO_GAIN)
 
-    col_FLAG = fits.Column(name='all_sources_FLAG', format='D', array=list_FLAG)
+    col_FLAG = fits.Column(name='all_sources_FLAG', format='D', array=EO_FLAG)
 
-    col_XX = fits.Column(name='all_sources_XX', format='D', array=list_XX)
+    col_XX = fits.Column(name='all_sources_XX', format='D', array=EO_XX)
 
-    col_YY = fits.Column(name='all_sources_YY', format='D', array=list_YY)
+    col_YY = fits.Column(name='all_sources_YY', format='D', array=EO_YY)
 
-    col_XY = fits.Column(name='all_sources_XY', format='D', array=list_XY)
+    col_XY = fits.Column(name='all_sources_XY', format='D', array=EO_XY)
 
-    col_YX = fits.Column(name='all_sources_YX', format='D', array=list_YX)
+    col_YX = fits.Column(name='all_sources_YX', format='D', array=EO_YX)
 
-    col_I = fits.Column(name='all_sources_I', format='D', array=list_I)
+    col_I = fits.Column(name='all_sources_I', format='D', array=EO_I)
 
-    col_Q = fits.Column(name='all_sources_Q', format='D', array=list_Q)
+    col_Q = fits.Column(name='all_sources_Q', format='D', array=EO_Q)
 
-    col_U = fits.Column(name='all_sources_U', format='D', array=list_U)
+    col_U = fits.Column(name='all_sources_U', format='D', array=EO_U)
 
-    col_V = fits.Column(name='all_sources_V', format='D', array=list_V)
+    col_V = fits.Column(name='all_sources_V', format='D', array=EO_V)
 
 
     col_list = []
